@@ -7,12 +7,12 @@ function Navbar() {
             <div className="navbar-content">
                 <div className="navbar-links">
                     <span className="navbar-gsb">GSB Frais</span>
-                    <Link to="/" className="navbar-link">Accueil</Link>
-                    <Link to="/dashboard" className="navbar-link">Tableau de bord</Link>
+                    <Link to="/" className="link">Accueil</Link>
+                    <Link to="/dashboard" className="link">Tableau de bord</Link>
                 </div>
                 <div className="navbar-auth">
-                    <Link to="" className="navbar-link">Déconnexion</Link>
-                    <Link to="/login" className="navbar-link">Connexion</Link>
+                    <Link to="" className="link">Déconnexion</Link>
+                    <Link to="/login" className="link">Connexion</Link>
                 </div>
             </div>
         </nav>
