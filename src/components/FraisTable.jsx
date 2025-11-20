@@ -5,13 +5,27 @@ import "../style/FraisTable.css";
 export default function FraisTable() {
   const [fraisList, setFrais] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterNonNull, setFilterNonNull] = useState(true);
+  const [minMontant, setMinMontant] = useState("");
 
-  const filteredFrais = fraisList.filter(
-    (f) =>
-      f.anneemois.includes(searchTerm) ||
-      f.id_visiteur.toString().includes(searchTerm)
-  );
+  const filteredFrais = fraisList.filter((f) => {
+    if (filterNonNull && (f.montantvalide === null || f.montantvalide === undefined)) {
+      return false;
+    }
+
+    if (
+      !(f.anneemois.includes(searchTerm) || f.id_visiteur.toString().includes(searchTerm))
+    ) {
+      return false;
+    }
+
+    if (minMontant && f.montantvalide !== null && f.montantvalide !== undefined) {
+      return f.montantvalide >= parseFloat(minMontant);
+    }
+
+    return true;
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -22,15 +36,59 @@ export default function FraisTable() {
 
   if (loading) return <div><b>Chargement des frais...</b></div>;
 
+  const rows = [];
+  for (let i = 0; i < filteredFrais.length; i++) {
+    const f = filteredFrais[i];
+    rows.push(
+      <tr key={f.id_frais}>
+        <td>{f.id_frais}</td>
+        <td>{f.id_etat}</td>
+        <td>{f.anneemois}</td>
+        <td>{f.id_visiteur}</td>
+        <td>{f.nbjustificatifs}</td>
+        <td>{f.datemodification}</td>
+        <td>{f.montantvalide ?? "€"}</td>
+      </tr>
+    );
+  }
+
   return (
     <div className="frais-table-container">
       <h2>Liste des Frais</h2>
-      <input
-        type="text"
-        placeholder="Rechercher par annee-mois, ID visiteur ou montant..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+
+      <div className="controls">
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={filterNonNull}
+              onChange={(e) => setFilterNonNull(e.target.checked)}
+            />
+            Afficher uniquement les frais validés
+          </label>
+        </div>
+
+        <div>
+          <input
+            type="text"
+            placeholder="Rechercher par année-mois ou ID visiteur"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label>
+            Montant minimum :
+            <input
+              type="number"
+              value={minMontant}
+              onChange={(e) => setMinMontant(e.target.value)}
+              placeholder="0 €"
+            />
+          </label>
+        </div>
+      </div>
 
       <table className="frais-table">
         <thead>
@@ -44,19 +102,7 @@ export default function FraisTable() {
             <th>Montant validé</th>
           </tr>
         </thead>
-        <tbody>
-          {filteredFrais.map((f) => (
-            <tr key={f.id_frais}>
-              <td>{f.id_frais}</td>
-              <td>{f.id_etat}</td>
-              <td>{f.anneemois}</td>
-              <td>{f.id_visiteur}</td>
-              <td>{f.nbjustificatifs}</td>
-              <td>{f.datemodification}</td>
-              <td>{f.montantvalide ?? "€"}</td>
-            </tr>
-          ))}
-        </tbody>
+        <tbody>{rows}</tbody>
       </table>
     </div>
   );

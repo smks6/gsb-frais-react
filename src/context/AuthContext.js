@@ -1,16 +1,17 @@
 import { createContext, useContext, useState } from "react";
+import { signIn } from "../services/authService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken]=useState(null);
 
-  const loginUser = (login, password) => {
-    if (login === "Andre" && password === "secret") {
-      setUser(login);
-      return true;
-    }
-    return false;
+  const loginUser = async(login, password) => {
+    const data=await signIn(login, password);
+    setUser(data.visiteur);
+    setToken(data.access_token);
+    return data;
   };
 
   const logoutUser = () => {
@@ -18,7 +19,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginUser, logoutUser }}>
+    <AuthContext.Provider value={{ user, token, loginUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -8,12 +8,13 @@ export default function Login(){
     const[password, setPassword]=useState('');
     const navigate=useNavigate();
     const { loginUser } = useAuth();
+    
 
-    const handleSubmit=(e)=>{
+    const handleSubmit=async(e)=>{
         e.preventDefault();
-        if(loginUser(login, password)){
+        try(loginUser(login, password)){
             navigate('/dashboard');
-        }else{
+        }catch{
             alert('Identifiant incorrects')
         }
     }
