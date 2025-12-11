@@ -9,7 +9,7 @@ function Dashboard() {
             <h1>Tableau de bord</h1>
 
             {user && (
-                <p>Bienvenue <strong>{user}</strong> !</p>
+                <p>Bienvenue <strong>{user.nom_visiteur}</strong> !</p>
             )}
             <FraisTable/>
         </div>

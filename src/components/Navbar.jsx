@@ -18,11 +18,16 @@ function Navbar() {
               Tableau de bord
             </Link>
           )}
+          {user && (
+            <Link to="/frais/ajouter" className="link">
+              Ajout frais
+            </Link>
+          )}
         </div>
 
         <div className="navbar-auth">
           {user ? (
-            <button className="link btn-logout" onClick={logoutUser}>
+            <button className="link-btn-logout" onClick={logoutUser} type="logout">
               Déconnexion
             </button>
           ) : (

@@ -8,6 +8,10 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import PrivateRoute from "./components/PrivateRoute";
+import FraisForm from './components/FraisForm';
+import FraisAdd from './pages/FraisAdd';
+import FraisEdit from './components/FraisEdit';
+import FraisHorsForfait from './components/FraisHorsForfait';
 
 function App() {
   return (
@@ -21,10 +25,14 @@ function App() {
             path="/dashboard"
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Dashboard/>
               </PrivateRoute>
             }
           />
+          <Route path="/fraisadd" element={<FraisForm />}/>
+          <Route path="/frais/ajouter" element={<FraisAdd />} />
+          <Route path="/frais/modifier/:id" element={<FraisEdit />} />
+          <Route path="/frais/:id/hors-forfait" element={<FraisHorsForfait />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

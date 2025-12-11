@@ -1,13 +1,42 @@
 import React, { useState, useEffect } from "react";
-import fraisData from "../data/frais.json";
+//import fraisData from "../data/frais.json";
 import "../style/FraisTable.css";
+import axios from "axios";
+import { API_URL, getCurrentUser, getAuthToken } from "../services/authService";
+import { useNavigate } from "react-router-dom"
+
 
 export default function FraisTable() {
-  const [fraisList, setFrais] = useState([]);
+  const [fraisList, setFraisList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterNonNull, setFilterNonNull] = useState(true);
   const [minMontant, setMinMontant] = useState("");
+  const user = getCurrentUser();
+  const token = getAuthToken();
+  const navigate = useNavigate();
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais ?")) 
+      return;
+    try {
+      console.log(id)
+      await axios.delete(
+        `${API_URL}frais/suppr`,
+        {
+          data: { id_frais: id },
+          headers: {
+          Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setFraisList(fraisList.filter((frais) => frais.id_frais !== id));
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+    }
+  };
+
+
 
   const filteredFrais = fraisList.filter((f) => {
     if (filterNonNull && (f.montantvalide === null || f.montantvalide === undefined)) {
@@ -28,10 +57,26 @@ export default function FraisTable() {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      setFrais(fraisData);
-      setLoading(false);
-    }, 1000);
+    const fetchFrais = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}frais/liste/${user.id_visiteur}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFraisList(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des frais:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user && token) {
+      fetchFrais();
+    }
   }, []);
 
   if (loading) return <div><b>Chargement des frais...</b></div>;
@@ -48,6 +93,19 @@ export default function FraisTable() {
         <td>{f.nbjustificatifs}</td>
         <td>{f.datemodification}</td>
         <td>{f.montantvalide ?? "€"}</td>
+        <td>
+          <button onClick={() => navigate(`/frais/modifier/${f.id_frais}`)}
+            className="edit-button" >
+            Modifier
+          </button>
+        </td>
+        <td>
+          <button onClick={() => handleDelete(f.id_frais)}
+            className="delete-button" >
+            Supprimer
+          </button>
+
+        </td>
       </tr>
     );
   }
@@ -100,10 +158,13 @@ export default function FraisTable() {
             <th>Nb justificatifs</th>
             <th>Date modification</th>
             <th>Montant validé</th>
+            <th>Actions</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
     </div>
+
   );
 }

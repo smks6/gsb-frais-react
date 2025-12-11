@@ -1,7 +1,11 @@
-function Home(){
-    
-    return(
-        <h1>Bienvenue</h1>
+function Home() {
+
+    return (
+        <div>
+            <title>GSB Frais</title>
+            <h1>Bienvenue</h1>
+        </div>
+
     )
 }
 
