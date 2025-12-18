@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../style/FraisHorsForfait.css";
 import FraisHorsForfaitTable from "./FraisHorsForfaitTable";
 
-export default function FraisHorsForfait() {
+function FraisHorsForfait() {
+  const { id } = useParams(); 
+  const navigate = useNavigate();
 
-  const { id } = useParams();  // récupère l'id du frais
   const [fraisHorsForfaitList, setFraisHorsForfaitList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
-
     const fetchFraisHorsForfaitList = async () => {
       try {
         const response = await axios.get(
@@ -19,6 +20,12 @@ export default function FraisHorsForfait() {
         );
 
         setFraisHorsForfaitList(response.data);
+
+        let somme = 0;
+        response.data.forEach((fraisHF) => {
+          somme += parseFloat(fraisHF.montant_fraishorsforfait);
+        });
+        setTotal(somme);
 
       } catch (error) {
         console.error("Erreur lors de la récupération des frais hors forfait :", error);
@@ -28,7 +35,6 @@ export default function FraisHorsForfait() {
     };
 
     fetchFraisHorsForfaitList();
-
   }, [id]);
 
   if (loading) return <b>Chargement des frais hors forfait...</b>;
@@ -40,7 +46,16 @@ export default function FraisHorsForfait() {
       <FraisHorsForfaitTable
         idFrais={id}
         fraisHorsForfaitList={fraisHorsForfaitList}
+        total={total}
       />
+      <button
+        className="btn-ajout"
+        onClick={() => navigate(`/frais-hors-forfait/ajouter/${id}`)}
+      >
+        Ajouter un frais hors forfait
+      </button>
     </div>
   );
 }
+
+export default FraisHorsForfait;
