@@ -13,6 +13,7 @@ import FraisAdd from './pages/FraisAdd';
 import FraisEdit from './components/FraisEdit';
 import FraisHorsForfait from './components/FraisHorsForfait';
 import FraisHorsForfaitAdd from './pages/FraisHorsForfaitAdd.js';
+import FraisHorsForfaitEdit from './pages/FraisHorsForfaitEdit.js';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
           <Route path="/frais/:id/hors-forfait" element={<FraisHorsForfait />} />
           <Route path="/frais/:id/hors-forfait/ajouter" element={<FraisHorsForfaitAdd />} />
+          <Route path="/frais/:id/hors-forfait/modifier/:idHF" element={<FraisHorsForfaitEdit />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

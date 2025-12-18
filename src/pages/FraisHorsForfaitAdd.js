@@ -1,15 +1,20 @@
-import { useParams } from "react-router-dom";
 import FraisHorsForfaitForm from "../components/FraisHorsForfaitForm";
+import { useAuth } from "../context/AuthContext";
 
 function FraisHorsForfaitAdd() {
-  const { id } = useParams(); // id du frais
+    const { user } = useAuth();
 
-  return (
-    <div className="frais-hf-add-container">
-      <h2>Ajouter un frais hors forfait</h2>
-      <FraisHorsForfaitForm idFrais={id} />
-    </div>
-  );
+    return (
+        <div>
+            <h1>Ajout d'un frais hors forfait</h1>
+
+            {user && (
+                <p>
+                    Ajouter un frais hors forfait pour <strong>{user.nom_visiteur}</strong> !
+                </p>
+            )}
+            <FraisHorsForfaitForm user={user} />
+        </div>
+    );
 }
-
 export default FraisHorsForfaitAdd;

@@ -113,10 +113,19 @@ function FraisForm({ frais }) {
         </div>
         <Link
           className="frais-hors-forfait-link"
+          to={`/frais/${idFrais}/hors-forfait/ajouter`}
+        >
+          Ajouter Frais hors forfait
+        </Link>
+
+        <Link
+          className="frais-hors-forfait-link"
           to={`/frais/${idFrais}/hors-forfait`}
         >
-          Frais hors forfait
+          Modifier le frais HF
         </Link>
+
+
         <button type="submit" disabled={loading}>
           {loading ? "Enregistrement..." : frais ? "Modifier" : "Ajouter"}
         </button>

@@ -5,7 +5,7 @@ import "../style/FraisHorsForfait.css";
 import FraisHorsForfaitTable from "./FraisHorsForfaitTable";
 
 function FraisHorsForfait() {
-  const { id } = useParams(); 
+  const { idFrais } = useParams(); 
   const navigate = useNavigate();
 
   const [fraisHorsForfaitList, setFraisHorsForfaitList] = useState([]);
@@ -16,7 +16,7 @@ function FraisHorsForfait() {
     const fetchFraisHorsForfaitList = async () => {
       try {
         const response = await axios.get(
-          `http://gsb.julliand.etu.lmdsio.com/api/fraisHF/liste/${id}`
+          `http://gsb.julliand.etu.lmdsio.com/api/fraisHF/liste/${idFrais}`
         );
 
         setFraisHorsForfaitList(response.data);
@@ -35,22 +35,22 @@ function FraisHorsForfait() {
     };
 
     fetchFraisHorsForfaitList();
-  }, [id]);
+  }, [idFrais]);
 
   if (loading) return <b>Chargement des frais hors forfait...</b>;
 
   return (
     <div className="frais-hf-container">
-      <h2>Frais Hors Forfait du frais n° {id}</h2>
+      <h2>Frais Hors Forfait du frais n° {idFrais}</h2>
 
       <FraisHorsForfaitTable
-        idFrais={id}
+        idFrais={idFrais}
         fraisHorsForfaitList={fraisHorsForfaitList}
         total={total}
       />
       <button
         className="btn-ajout"
-        onClick={() => navigate(`/frais-hors-forfait/ajouter/${id}`)}
+        onClick={() => navigate(`/frais-hors-forfait/${idFrais}`)}
       >
         Ajouter un frais hors forfait
       </button>
